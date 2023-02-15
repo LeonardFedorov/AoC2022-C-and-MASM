@@ -7,6 +7,7 @@ HeapAlloc PROTO; Allocate memory within the heap#
 
 	StackStore QWORD ?
 	HeapHandle QWORD ?
+	CountStore QWORD ?
 
 	charOffset EQU 30h
 		
@@ -74,7 +75,7 @@ NumberToString PROC
 	Finalise:
 
 		;Store the count in R11 as RCX is volatile during Win32 calls
-		MOV R11, RCX	
+		MOV CountStore, RCX	
 		
 		;Store the current stack pointer so it can be restored later
 		MOV StackStore, RSP
@@ -90,7 +91,7 @@ NumberToString PROC
 
 			MOV RCX, heapHandle
 			MOV RDX, 8
-			MOV	R8, R11
+			MOV	R8, CountStore
 
 			CALL HeapAlloc
 			;Leave the memory pointer in RAX as this is the final output anyway
@@ -107,7 +108,7 @@ NumberToString PROC
 			MOV [RAX + RCX], DL
 			INC RCX
 
-			CMP RCX, R11
+			CMP RCX, CountStore
 			JB	PopString
 	
 	RET
