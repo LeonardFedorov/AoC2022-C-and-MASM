@@ -14,23 +14,24 @@ HeapAlloc PROTO; Allocate memory within the heap#
 .CODE	
 
 ; Process a single number placed in RCX, returning a pointer to where the string can be found in RAX
-; String is preceeded by a QWORD stating its length and is not zero-terminated
+; String is null terminated
+; Of the general purpose registers, R8-11 are volatile during this function
 NumberToString PROC
 
 	;Move the input number to a safe place so that we can use RCX for other things
 	MOV R10, RCX
 
+	;String will always be null terminated - so put this on the stack first
 	PUSH 0
 	MOV RCX, 1
 
 	; Handle zero separately
 	CMP R10, 0
 	JNE NonZero
-		;Add zero char to stack and incremente char count by 1
+		;Add zero char to stack and increment char count by 1 before proceeding to finalise
 		PUSH charOffset
 		INC RCX
-
-	JMP Finalise
+		JMP Finalise
 
 	NonZero:
 		
@@ -103,7 +104,8 @@ NumberToString PROC
 		XOR RCX, RCX
 
 		PopString:
-
+			
+			;Get the chars out of the stack one by one and write them into our new memory area
 			POP RDX
 			MOV [RAX + RCX], DL
 			INC RCX

@@ -26,5 +26,8 @@
     <MASM Include="Utilities.asm">
       <Filter>Source Files</Filter>
     </MASM>
+    <MASM Include="..\..\AoC2022Day1\AoC2022Day1\Day1.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
